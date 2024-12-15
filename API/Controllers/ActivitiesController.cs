@@ -1,30 +1,46 @@
-using System.Diagnostics;
+using Application.Activities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
+using Domain;
 
 namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-        private readonly DataDbContext _context;
-        public ActivitiesController(DataDbContext context)
-        {
-            _context = context;
-        }
-
         [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetActivities() 
         {
-            var activities = await _context.Activities.ToListAsync();
-            return Ok(activities);
+            return await Mediator.Send(new List.Query());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Activity>> GetActivity(Guid id)
         {
-            var activity = await _context.Activities.FindAsync(id);
-            return Ok(activity);
+            return await Mediator.Send(new Details.Query{id = id});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateActivity(Activity activity)
+        {
+            await Mediator.Send(new Create.Command{Activity = activity});
+
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditActivity(Guid id, Activity activity) 
+        {
+            activity.Id = id;
+            await Mediator.Send(new Edit.Command{Activity = activity});
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteActivity(Guid id) 
+        {
+            await Mediator.Send(new Delete.Command{Id = id});
+
+            return Ok();
         }
     }
 }
