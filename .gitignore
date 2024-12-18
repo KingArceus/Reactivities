@@ -486,3 +486,8 @@ $RECYCLE.BIN/
 # Assets
 __MACOSX/
 StudentAssets/
+
+# DB files
+*.db
+*.db-shm
+*.db-wal
