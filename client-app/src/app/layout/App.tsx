@@ -1,28 +1,25 @@
 import { useEffect, useState } from 'react'
 import { Container } from 'semantic-ui-react';
-import { Activity } from '../../models/Activity';
+import { Activity } from '../models/Activity';
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import { v4 as uuid } from 'uuid';
 import agent from '../API/agent';
 import LoadingComponent from './LoadingComponent';
+import { useStore } from '../stores/store';
+import { observer } from 'mobx-react-lite';
 
 function App() {
+  const {activityStore} = useStore();
+
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    agent.Activities.list().then(response => {
-        response.forEach(activity => {
-          activity.date = activity.date.split('T')[0];
-        });
-        setActivities(response);
-        setLoading(false);
-      })
-  }, [])
+    activityStore.loadActivities();
+  }, [activityStore])
 
   function handleSelectActivity(id: string) {
     setSelectedActivity(activities.find(x => x.id === id))
@@ -72,7 +69,7 @@ function App() {
     });
   }
 
-  if (loading) return <LoadingComponent content='Loading app'/>
+  if (activityStore.loadingInitial) return <LoadingComponent content='Loading app'/>
 
   return (
     <>
@@ -88,11 +85,11 @@ function App() {
           createOrEdit={handleCreateOrEditActivity}
           deleteActivity={handleDeleteActivity}
           submitting={submitting}
-          activities={activities}>
+          activities={activityStore.activities}>
         </ActivityDashboard>
       </Container>
     </>
   )
 }
 
-export default App
+export default observer(App);
