@@ -1,31 +1,36 @@
 import { Button, Card, CardContent, CardDescription, CardHeader, CardMeta, Image } from "semantic-ui-react";
-import { Activity } from "../../../app/models/Activity";
+import { useStore } from "../../../app/stores/store";
 
-interface Props {
-    activity: Activity;
-    cancelSelectActivity: () => void;
-    openForm: (id: string) => void;
-}
+export default function ActivityDetails() {
+    const {activityStore} = useStore();
+    const {selectedActivity} = activityStore;
 
-export default function ActivityDetails({activity, cancelSelectActivity, openForm}: Props) {
-  return (
-    <Card fluid>
-        <Image src={`/assets/categoryImages/${activity.category}.jpg`} />
-        <CardContent>
-        <CardHeader>{activity.title}</CardHeader>
-        <CardMeta>
-            <span>{activity.date}</span>
-        </CardMeta>
-        <CardDescription>
-            {activity.description}
-        </CardDescription>
-        </CardContent>
-        <CardContent extra>
-        <Button.Group widths='2'>
-            <Button onClick={() => openForm(activity.id)} basic color='blue' content='Edit' />
-            <Button onClick={cancelSelectActivity} basic color='grey' content='Cancel' />
-        </Button.Group>
-        </CardContent>
-    </Card>
-  )
+    if (!selectedActivity) return undefined;
+
+    return (
+        <Card fluid>
+            <Image src={`/assets/categoryImages/${selectedActivity.category}.jpg`} />
+            <CardContent>
+            <CardHeader>{selectedActivity.title}</CardHeader>
+            <CardMeta>
+                <span>{selectedActivity.date}</span>
+            </CardMeta>
+            <CardDescription>
+                {selectedActivity.description}
+            </CardDescription>
+            </CardContent>
+            <CardContent extra>
+            <Button.Group widths='2'>
+                <Button onClick={() => activityStore.openForm(selectedActivity.id)} 
+                        basic 
+                        color='blue' 
+                        content='Edit' />
+                <Button onClick={activityStore.cancelSelectedActivity} 
+                        basic 
+                        color='grey' 
+                        content='Cancel' />
+            </Button.Group>
+            </CardContent>
+        </Card>
+    )
 }

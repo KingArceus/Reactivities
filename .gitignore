@@ -491,3 +491,4 @@ StudentAssets/
 *.db
 *.db-shm
 *.db-wal
+API/reactivities.db
