@@ -21,12 +21,10 @@ export default function ActivityDetails() {
             </CardContent>
             <CardContent extra>
             <Button.Group widths='2'>
-                <Button onClick={() => activityStore.openForm(selectedActivity.id)} 
-                        basic 
+                <Button basic 
                         color='blue' 
                         content='Edit' />
-                <Button onClick={activityStore.cancelSelectedActivity} 
-                        basic 
+                <Button basic 
                         color='grey' 
                         content='Cancel' />
             </Button.Group>
