@@ -20,11 +20,15 @@ export const routes: RouteObject[] = [
             },
             {
                 path: 'createActivity',
-                element: <ActivityForm />
+                element: <ActivityForm key={'create'} />
             },
             {
                 path: 'activities/:id',
                 element: <ActivityDetails />
+            },
+            {
+                path: 'manage/:id',
+                element: <ActivityForm key={'manage'} />
             }
         ]
     }
