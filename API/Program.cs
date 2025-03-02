@@ -1,3 +1,4 @@
+using API;
 using API.Extensions;
 using API.Middleware;
 using Microsoft.EntityFrameworkCore;
@@ -36,7 +37,7 @@ try
 {
     var context = services.GetRequiredService<DataDbContext>();
     await context.Database.MigrateAsync();
-    await Seed.SeedData(context);
+    await DbInitializer.SeedData(context);
 }
 catch (Exception ex)
 {
