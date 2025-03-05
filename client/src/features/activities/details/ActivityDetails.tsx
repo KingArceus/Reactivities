@@ -1,39 +1,34 @@
-import { Grid } from "semantic-ui-react";
-import { useStore } from "../../../app/stores/store";
-import { observer } from "mobx-react-lite";
-import { useParams } from "react-router-dom/dist/index.d.mts";
-import { useEffect } from "react";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
-import ActivityDetailHeader from "./ActivityDetailHeader";
-import ActivityDetailInfo from "./ActivityDetailInfo";
-import ActivityDetailSideBar from "./ActivityDetailSideBar";
-import ActivityDetailChat from "./ActivityDetailChat";
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+import { useActivities } from "../../../lib/hooks/useActivities";
 
-function ActivityDetails() {
-    const {activityStore} = useStore();
-    const {selectedActivity, loadActivity, loadingInitial} = activityStore;
-    const {id} = useParams();
+type Props = {
+    selectedActivity: Activity;
+    cancelSelectActivity: () => void;
+    openForm: (id: string) => void;
+}
 
-    useEffect(() => {
-        if (id) {
-            loadActivity(id);
-        };
-    }, [id, loadActivity]);
+function ActivityDetails({selectedActivity, cancelSelectActivity, openForm}: Props) {
+    const {activities} = useActivities();
+    const activity = activities?.find(a => a.id === selectedActivity.id);
 
-    if (loadingInitial || !selectedActivity) return <LoadingComponent />;
+    if (!activity) return <Typography>
+        Loading...
+    </Typography>;
 
     return (
-        <Grid>
-            <Grid.Column width={10}>
-                <ActivityDetailHeader activity={selectedActivity}/>
-                <ActivityDetailInfo activity={selectedActivity}/>
-                <ActivityDetailChat />
-            </Grid.Column>
-            <Grid.Column width={6}>
-                <ActivityDetailSideBar />
-            </Grid.Column>
-        </Grid>
+        <Card sx={{ borderRadius: 3 }}>
+            <CardMedia component={'img'} src={`/images/categoryImages/${activity?.category}`}/>
+            <CardContent>
+                <Typography variant="h5">{activity?.title}</Typography>
+                <Typography variant="subtitle1" fontWeight={'light'}>{activity?.date}</Typography>
+                <Typography variant="body1">{activity?.description}</Typography>
+            </CardContent>
+            <CardActions>
+                <Button onClick={() => openForm(activity.id)} color="primary">Edit</Button>
+                <Button onClick={cancelSelectActivity} color="inherit">Cancel</Button>
+            </CardActions>
+        </Card>
     )
 }
 
-export default observer(ActivityDetails);
+export default ActivityDetails;

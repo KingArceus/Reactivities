@@ -1,31 +1,37 @@
-import { Grid } from "semantic-ui-react";
+import { Grid2 } from "@mui/material";
 import ActivityList from "./ActivityList";
-import { useStore } from "../../../app/stores/store";
-import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
-import ActivityFilters from "./ActivityFilters";
+import ActivityDetails from "../details/ActivityDetails";
+import ActivityForm from "../form/ActivityForm";
 
-function ActivityDashboard() {
-    const {activityStore} = useStore();
-    const {loadActivities, activityRegistry} = activityStore;
+type Props = {
+    activities: Activity[];
+    selectActivity: (id: string) => void;
+    cancelSelectActivity: () => void;
+    selectedActivity?: Activity;
+    editMode: boolean;
+    openForm: (id: string) => void;
+    closeForm: () => void;
+}
 
-    useEffect(() => {
-      if (activityRegistry.size <= 1) loadActivities();
-    }, [loadActivities])
-  
-    if (activityStore.loadingInitial) return <LoadingComponent content='Loading app'/>
-
+function ActivityDashboard({ activities, selectActivity, cancelSelectActivity, selectedActivity, editMode, openForm, closeForm }: Props) {
     return (
-        <Grid>
-            <Grid.Column width='10'>
-                <ActivityList />
-            </Grid.Column>
-            <Grid.Column width='6'>
-                <ActivityFilters />
-            </Grid.Column>
-        </Grid>
+        <Grid2 container spacing={3}>
+            <Grid2 size={7}>
+                <ActivityList activities={activities}
+                              selectActivity={selectActivity}/>
+            </Grid2>
+            <Grid2 size={5}>
+                {selectedActivity && !editMode &&
+                    <ActivityDetails selectedActivity={selectedActivity}
+                                     cancelSelectActivity={cancelSelectActivity}
+                                     openForm={openForm}/>
+                }
+                {editMode &&
+                    <ActivityForm closeForm={closeForm} activity={selectedActivity}/>
+                }
+            </Grid2>
+        </Grid2>
     )
 }
 
-export default observer(ActivityDashboard);
+export default ActivityDashboard;

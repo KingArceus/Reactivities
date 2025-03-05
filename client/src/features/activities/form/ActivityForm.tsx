@@ -1,69 +1,60 @@
-import { Button, Form, Segment } from "semantic-ui-react";
-import { useEffect, useState } from "react";
-import { useStore } from "../../../app/stores/store";
-import { observer } from "mobx-react-lite";
-import { Link, useParams } from "react-router-dom/dist/index.d.mts";
-import { Activity } from "../../../app/models/Activity";
-import LoadingComponent from "../../../app/layout/LoadingComponent";
-import { Formik } from "formik";
+import { Box, Paper, TextField, Typography, Button } from "@mui/material";
+import { FormEvent } from "react";
+import { useActivities } from "../../../lib/hooks/useActivities";
 
-function ActivityForm() {
+type Props = {
+  closeForm: () => void;
+  activity?: Activity;
+}
 
-  const {activityStore} = useStore();
-  const { loading, loadActivity, loadingInitial } = activityStore;
+function ActivityForm({closeForm, activity}: Props) {
+  const {updateActivity, createActivity} = useActivities();
 
-  const {id} = useParams();
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    
+    const formData = new FormData(event.currentTarget);
+    const data: {[key: string]: FormDataEntryValue} = {};
 
-  const [activity, setActivity] = useState<Activity>({
-    id: '',
-    title: '',
-    category: '',
-    description: '',
-    date: '',
-    city: '',
-    venue: ''
-  });
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
 
-  useEffect(() => {
-    if (id) {
-      loadActivity(id).then(activity => setActivity(activity!));
+    if (activity) {
+      data.id = activity.id;
+      await updateActivity.mutateAsync(data as unknown as Activity);
+      closeForm();
+    } else {
+      await createActivity.mutateAsync(data as unknown as Activity);
+      closeForm();
     }
-  }, [id, loadActivity]);
+  }
 
-  // function handleSubmit() {
-  //   if (!activity.id) {
-  //     activity.id = uuid();
-  //     activityStore.createActivity(activity).then(() => navigate(`/activities/${activity.id}`));
-  //   } else {
-  //     activityStore.updateActivity(activity).then(() => navigate(`/activities/${activity.id}`));
-  //   }
-  // }
-
-  // function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-  //     const {name, value} = event.target;
-  //     setActivity({...activity, [name]: value});
-  // }
-
-  if (loadingInitial) return <LoadingComponent content="Loading Activity"/>;
-  
   return (
-    <Segment clearing>
-        <Formik enableReinitialize initialValues={activity} onSubmit={values => console.log(values)}>
-          {({values: activity, handleChange, handleSubmit}) => ((
-            <Form onSubmit={handleSubmit} autoComplete='off'>
-            <Form.Input placeholder='Title' value={activity.title} name='title' onChange={handleChange}/>
-            <Form.TextArea placeholder='Description' value={activity.description} name='description' onChange={handleChange}/>
-            <Form.Input placeholder='Category' value={activity.category} name='category' onChange={handleChange}/>
-            <Form.Input type='date' placeholder='Date' value={activity.date} name='date' onChange={handleChange}/>
-            <Form.Input placeholder='City' value={activity.city} name='city' onChange={handleChange}/>
-            <Form.Input placeholder='Venue' value={activity.venue} name='venue' onChange={handleChange}/>
-            <Button loading={loading} floated='right' positive type='submit' content='Submit' />
-            <Button as={Link} to='/activities' floated='right' type='button' content='Cancel' />
-        </Form>
-          ))}
-        </Formik>
-    </Segment>
+    <Paper sx={{borderRadius: 3, padding: 3}}>
+      <Typography variant="h4" gutterBottom color="primary">Create Activity</Typography>
+      <Box component={'form'} onSubmit={handleSubmit} display={'flex'} flexDirection={'column'} gap={3}>
+        <TextField name="title" label="Title" defaultValue={activity?.title}/>
+        <TextField name="description" label="Description" defaultValue={activity?.description} multiline={true} rows={3}/>
+        <TextField name="category" label="Category" defaultValue={activity?.category}/>
+        <TextField name="date" label="Date" type="date" 
+                  defaultValue={activity?.date 
+                      ? new Date(activity.date).toISOString().split('T')[0]
+                      : new Date().toISOString().split('T')[0]}/>
+        <TextField name="city" label="City" defaultValue={activity?.city}/>
+        <TextField name="venue" label="Venue" defaultValue={activity?.venue}/>
+        <Box display={'flex'} justifyContent={'end'} gap={3}>
+          <Button onClick={closeForm} color="inherit">Cancel</Button>
+          <Button type="submit" 
+                  color="success" 
+                  variant="contained" 
+                  disabled={updateActivity.isPending || createActivity.isPending}>
+                    Submit
+          </Button>
+        </Box>
+      </Box>
+    </Paper>
   )
 }
 
-export default observer(ActivityForm);
+export default ActivityForm;
