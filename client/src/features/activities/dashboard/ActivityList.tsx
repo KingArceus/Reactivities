@@ -1,29 +1,23 @@
-import { Header } from "semantic-ui-react";
-import { useStore } from "../../../app/stores/store";
-import { observer } from "mobx-react-lite";
-import ActivityListItem from "./ActivityListItem";
-import { Fragment } from "react/jsx-runtime";
+import { Box } from "@mui/material";
+import ActivityCard from "./ActivityCard";
 
-function ActivityList() {
-    const { activityStore } = useStore();
+type Props = {
+    activities: Activity[];
+    selectActivity: (id: string) => void;
+    deleteActivity: (id: string) => void;
+}
 
-    const { groupedActivities } = activityStore;
-
+function ActivityList({activities, selectActivity, deleteActivity}: Props) {
     return (
-        <>
-            {groupedActivities.map(([group, activities]) => (
-                <Fragment key={group}>
-                    <Header sub color='teal'>
-                        {group}
-                    </Header>
-                    {activities.map(activity => (
-                        <ActivityListItem activity={activity} key={activity.id} />
-                    ))}
-                </Fragment>
+        <Box sx={{display: 'flex', flexDirection: 'column', gap: 3}}>
+            {activities.map(activity => (
+                <ActivityCard key={activity.id} 
+                              activity={activity} 
+                              selectActivity={selectActivity} 
+                              deleteActivity={deleteActivity}/>
             ))}
-        </>
-
+        </Box>
     )
 }
 
-export default observer(ActivityList);
+export default ActivityList;

@@ -1,26 +1,73 @@
-import { Container } from 'semantic-ui-react';
+import { Box, Container, CssBaseline } from '@mui/material';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import NavBar from './NavBar';
-import { observer } from 'mobx-react-lite';
-import { Outlet, useLocation } from 'react-router-dom';
-import HomePage from '../../features/home/HomePage';
-import { ToastContainer } from 'react-toastify';
+import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 
 function App() {
-  const location = useLocation();
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
+  const [editMode, setEditMode] = useState(false);
+
+  useEffect(() => {
+    axios.get<Activity[]>('http://localhost:5000/api/activities').then(response => {
+      setActivities(response.data);
+    })
+  }, []);
+
+  const handleSelectActivity = (id: string) => {
+    setSelectedActivity(activities.find(a => a.id === id));
+  };
+
+  const handleCancelSelectActivity = () => {
+    setSelectedActivity(undefined);
+  }
+
+  const handleFormOpen = (id?: string) => {
+    if (id) 
+      handleSelectActivity(id);
+    else
+      setSelectedActivity(undefined);
+    setEditMode(true);
+  }
+
+  const handleFormClose = () => {
+    setEditMode(false);
+  }
+
+  const handleSubmitForm = (activity: Activity) => {
+    if (activity.id) {
+      setActivities(activities.map(a => a.id === activity.id ? activity : a));
+    } 
+    else {
+      const newActivity = {...activity, id: activities.length.toString()};
+      setSelectedActivity(newActivity);
+      setActivities([...activities, newActivity]);
+    }
+    setEditMode(false);
+  }
+
+  const handleDeleteActivity = (id: string) => {
+    setActivities(activities.filter(a => a.id !== id));
+  }
 
   return (
-    <>
-      <ToastContainer position='bottom-right' hideProgressBar theme='colored' />
-      {location.pathname === '/' ? <HomePage /> : (
-        <>
-          <NavBar />
-          <Container style={{marginTop: '7em'}}>
-            <Outlet />
-          </Container>
-        </>
-      )}
-    </>
+    <Box sx={{bgcolor: '#eeeeee'}}>
+      <CssBaseline />
+      <NavBar openForm={handleFormOpen}/>
+      <Container maxWidth="xl" sx={{ mt: 3 }}>
+        <ActivityDashboard activities={activities} 
+                           selectActivity={handleSelectActivity} 
+                           cancelSelectActivity={handleCancelSelectActivity}
+                           selectedActivity={selectedActivity}
+                           editMode={editMode}
+                           openForm={handleFormOpen}
+                           closeForm={handleFormClose}
+                           submitForm={handleSubmitForm}
+                           deleteActivity={handleDeleteActivity}/>
+      </Container>
+    </Box>
   )
 }
 
-export default observer(App);
+export default App;
