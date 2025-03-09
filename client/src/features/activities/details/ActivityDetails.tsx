@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
 
@@ -6,6 +7,24 @@ type Props = {
     cancelSelectActivity: () => void;
     openForm: (id: string) => void;
 }
+=======
+import { useStore } from "../../../app/stores/store";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+
+type Props = {
+    activity: Activity;
+    cancelSelectActivity: () => void;
+    openForm: (id: string) => void;
+}
+
+function ActivityDetails({activity, cancelSelectActivity, openForm}: Props) {
+    const {activityStore} = useStore();
+    const {selectedActivity, loadActivity, loadingInitial} = activityStore;
+    const {id} = useParams();
+>>>>>>> ef615985708bea5fcd7cfe042648d8ab48bf6313
 
 function ActivityDetails({selectedActivity, cancelSelectActivity, openForm}: Props) {
     const {activities} = useActivities();
