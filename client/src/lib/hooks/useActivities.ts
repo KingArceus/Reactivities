@@ -7,7 +7,7 @@ export const useActivities = () => {
     const {data: activities, isPending} = useQuery({
         queryKey: ['activities'],
         queryFn: async () => {
-          const response = await agent.get<Activity[]>('https://localhost:5000/api/activities');
+          const response = await agent.get<Activity[]>('/activities');
           return response.data;
         },
         enabled: true

@@ -1,6 +1,5 @@
-import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Button, Toolbar, Typography, Container, MenuItem } from "@mui/material";
 import { Group } from "@mui/icons-material";
-import { Container, MenuItem } from "semantic-ui-react";
 
 type Props = {
     openForm: () => void;
@@ -22,6 +21,12 @@ export default function NavBar({openForm}: Props) {
                         <Box sx={{display: 'flex'}}>
                             <MenuItem sx={{fontSize: '1.2rem', textTranssform: 'uppercase', fontWeight: 'bold'}}>
                                 Activities
+                            </MenuItem>
+                            <MenuItem sx={{fontSize: '1.2rem', textTranssform: 'uppercase', fontWeight: 'bold'}}>
+                                About
+                            </MenuItem>
+                            <MenuItem sx={{fontSize: '1.2rem', textTranssform: 'uppercase', fontWeight: 'bold'}}>
+                                Contact
                             </MenuItem>
                         </Box>
                         <Button onClick={openForm} size="large" variant="contained" color="warning">
