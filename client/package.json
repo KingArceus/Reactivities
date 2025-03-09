@@ -16,11 +16,8 @@
     "@mui/icons-material": "^6.4.6",
     "@mui/material": "^6.4.6",
     "@mui/styled-engine-sc": "^6.4.6",
-<<<<<<< HEAD
     "@tanstack/react-query": "^5.67.2",
     "@tanstack/react-query-devtools": "^5.67.2",
-=======
->>>>>>> ef615985708bea5fcd7cfe042648d8ab48bf6313
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "mobx-react-lite": "^4.1.0",
