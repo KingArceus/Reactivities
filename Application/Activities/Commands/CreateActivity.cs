@@ -19,7 +19,7 @@ namespace Application.Activities.Commands
                 context.Activities.Add(request.Activity);
                 var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
-                return result ? Result<string>.Success(Unit.Value.ToString()) : Result<string>.Failure("Failed to create activity");
+                return result ? Result<string>.Success(request.Activity.Id) : Result<string>.Failure("Failed to create activity");
             }
         }
     }

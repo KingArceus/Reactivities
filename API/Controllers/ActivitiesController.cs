@@ -1,4 +1,3 @@
-using Application.Activities;
 using Microsoft.AspNetCore.Mvc;
 using Domain;
 using Application.Activities.Queries;
