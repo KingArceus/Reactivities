@@ -1,57 +1,87 @@
-import { observer } from "mobx-react-lite";
-import { Activity } from "../../../app/models/Activity";
-import { Button, Header, Item, Segment, Image } from "semantic-ui-react";
-import { Link } from "react-router-dom/dist/index.d.mts";
+import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
+import { Link } from "react-router";
+import { formatDate } from "../../../lib/util/util";
 
-const activityImageStyle = {
-    filter: 'brightness(30%)'
-};
-
-const activityImageTextStyle = {
-    position: 'absolute',
-    bottom: '5%',
-    left: '5%',
-    width: '100%',
-    height: 'auto',
-    color: 'white'
-};
-
-interface Props {
-    activity: Activity
+type Props = {
+    activity: Activity;
 }
 
-function ActivityDetailHeader({activity}: Props) {
+export default function ActivityDetailsHeader({ activity }: Props) {
+    const isCancelled = false;
+    const isHost = true;
+    const isGoing = true;
+    const loading = false;
+
     return (
-        <Segment.Group>
-            <Segment basic attached='top' style={{padding: '0'}}>
-                <Image src={`/assets/categoryImages/${activity.category}.jpg`} fluid style={activityImageStyle}/>
-                <Segment style={activityImageTextStyle} basic>
-                    <Item.Group>
-                        <Item>
-                            <Item.Content>
-                                <Header
-                                    size='huge'
-                                    content={activity.title}
-                                    style={{color: 'white'}}
-                                />
-                                <p>{activity.date}</p>
-                                <p>
-                                    Hosted by <strong>Bob</strong>
-                                </p>
-                            </Item.Content>
-                        </Item>
-                    </Item.Group>
-                </Segment>
-            </Segment>
-            <Segment clearing attached='bottom'>
-                <Button color='teal'>Join Activity</Button>
-                <Button>Cancel attendance</Button>
-                <Button as={Link} to={`/manage/${activity.id}`} color='orange' floated='right'>
-                    Manage Event
-                </Button>
-            </Segment>
-        </Segment.Group>
+        <Card sx={{ position: 'relative', mb: 2, backgroundColor: 'transparent', overflow: 'hidden' }}>
+        {isCancelled && (
+            <Badge
+                sx={{ position: 'absolute', left: 40, top: 20, zIndex: 1000 }}
+                color="error"
+                badgeContent="Cancelled"
+            />
+        )}
+        <CardMedia
+            component="img"
+            height="300"
+            image={`/assets/categoryImages/${activity.category}.jpg`}
+            alt={`${activity.category} image`}
+        />
+        <Box sx={{
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            color: 'white',
+            padding: 2,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            background: 'linear-gradient(to top, rgba(0, 0, 0, 1.0), transparent)',
+            boxSizing: 'border-box',
+        }}>
+            {/* Text Section */}
+            <Box>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>{activity.title}</Typography>
+                <Typography variant="subtitle1">{formatDate(activity.date)}</Typography>
+                <Typography variant="subtitle2">
+                    Hosted by <Link to={`/profiles/username`} style={{ color: 'white', fontWeight: 'bold' }}>Bob</Link>
+                </Typography>
+            </Box>
+
+            {/* Buttons aligned to the right */}
+            <Box sx={{ display: 'flex', gap: 2 }}>
+                {isHost ? (
+                    <>
+                        <Button
+                            variant='contained'
+                            color={isCancelled ? 'success' : 'error'}
+                            onClick={() => { }}
+                        >
+                            {isCancelled ? 'Re-activate Activity' : 'Cancel Activity'}
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            component={Link}
+                            to={`/manage/activityId`}
+                            disabled={isCancelled}
+                        >
+                            Manage Event
+                        </Button>
+                    </>
+                ) : (
+                    <Button
+                        variant="contained"
+                        color={isGoing ? 'primary' : 'info'}
+                        onClick={() => { }}
+                        disabled={isCancelled || loading}
+                    >
+                        {isGoing ? 'Cancel Attendance' : 'Join Activity'}
+                    </Button>
+                )}
+            </Box>
+        </Box>
+    </Card>
     )
 }
-
-export default observer(ActivityDetailHeader);

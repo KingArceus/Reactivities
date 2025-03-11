@@ -1,61 +1,52 @@
-import { observer } from "mobx-react-lite";
-import { Header, Segment, Comment, Form, Button } from "semantic-ui-react";
+import { Box, Typography, Card, CardContent, TextField, Avatar } from "@mui/material";
+import { Link } from "react-router";
 
-function ActivityDetailChat() {
+export default function ActivityDetailsChat() {
     return (
         <>
-            <Segment
-                textAlign='center'
-                attached='top'
-                inverted
-                color='teal'
-                style={{border: 'none'}}
+            <Box
+                sx={{
+                    textAlign: 'center',
+                    bgcolor: 'primary.main',
+                    color: 'white',
+                    padding: 2
+                }}
             >
-                <Header>Chat about this event</Header>
-            </Segment>
-            <Segment attached>
-                <Comment.Group>
-                    <Comment>
-                        <Comment.Avatar src='/assets/user.png'/>
-                        <Comment.Content>
-                            <Comment.Author as='a'>Matt</Comment.Author>
-                            <Comment.Metadata>
-                                <div>Today at 5:42PM</div>
-                            </Comment.Metadata>
-                            <Comment.Text>How artistic!</Comment.Text>
-                            <Comment.Actions>
-                                <Comment.Action>Reply</Comment.Action>
-                            </Comment.Actions>
-                        </Comment.Content>
-                    </Comment>
+                <Typography variant="h6">Chat about this event</Typography>
+            </Box>
+            <Card>
+                <CardContent>
+                    <div>
+                        <form>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                rows={2}
+                                placeholder="Enter your comment (Enter to submit, SHIFT + Enter for new line)"
+                            />
+                        </form>
+                    </div>
 
-                    <Comment>
-                        <Comment.Avatar src='/assets/user.png'/>
-                        <Comment.Content>
-                            <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                            <Comment.Metadata>
-                                <div>5 days ago</div>
-                            </Comment.Metadata>
-                            <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                            <Comment.Actions>
-                                <Comment.Action>Reply</Comment.Action>
-                            </Comment.Actions>
-                        </Comment.Content>
-                    </Comment>
+                    <Box>
+                        <Box sx={{ display: 'flex', my: 2 }}>
+                            <Avatar src={'/assets/user.png'} alt={'user image'} sx={{ mr: 2 }} />
+                            <Box display='flex' flexDirection='column'>
+                                <Box display='flex' alignItems='center' gap={3}>
+                                    <Typography component={Link} to={`/profiles/username`} variant="subtitle1" sx={{ fontWeight: 'bold', textDecoration: 'none' }}>
+                                        Bob
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        2 hours ago
+                                    </Typography>
+                                </Box>
 
-                    <Form reply>
-                        <Form.TextArea/>
-                        <Button
-                            content='Add Reply'
-                            labelPosition='left'
-                            icon='edit'
-                            primary
-                        />
-                    </Form>
-                </Comment.Group>
-            </Segment>
+                                <Typography sx={{ whiteSpace: 'pre-wrap' }}>Comment goes here</Typography>
+                            </Box>
+                        </Box>
+                    </Box>
+                </CardContent>
+            </Card>
         </>
     )
 }
-
-export default observer(ActivityDetailChat);

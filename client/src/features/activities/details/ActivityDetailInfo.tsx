@@ -1,48 +1,44 @@
-import { observer } from "mobx-react-lite"
-import { Activity } from "../../../app/models/Activity"
-import { Grid, Icon, Segment } from "semantic-ui-react";
+import { CalendarToday, Info, Place } from "@mui/icons-material";
+import { Divider, Grid2, Paper, Typography } from "@mui/material";
+import { formatDate } from "../../../lib/util/util";
 
-interface Props {
-    activity: Activity
+type Props = {
+    activity: Activity;
 }
 
-function ActivityDetailInfo({activity}: Props) {
+export default function ActivityDetailsInfo({ activity }: Props) {
     return (
-        <Segment.Group>
-            <Segment attached='top'>
-                <Grid>
-                    <Grid.Column width={1}>
-                        <Icon size='large' color='teal' name='info'/>
-                    </Grid.Column>
-                    <Grid.Column width={15}>
-                        <p>{activity.description}</p>
-                    </Grid.Column>
-                </Grid>
-            </Segment>
-            <Segment attached>
-                <Grid verticalAlign='middle'>
-                    <Grid.Column width={1}>
-                        <Icon name='calendar' size='large' color='teal'/>
-                    </Grid.Column>
-                    <Grid.Column width={15}>
-            <span>
-              {activity.date}
-            </span>
-                    </Grid.Column>
-                </Grid>
-            </Segment>
-            <Segment attached>
-                <Grid verticalAlign='middle'>
-                    <Grid.Column width={1}>
-                        <Icon name='marker' size='large' color='teal'/>
-                    </Grid.Column>
-                    <Grid.Column width={11}>
-                        <span>{activity.venue}, {activity.city}</span>
-                    </Grid.Column>
-                </Grid>
-            </Segment>
-        </Segment.Group>
+        <Paper sx={{ mb: 2 }}>
+
+            <Grid2 container alignItems="center" pl={2} py={1}>
+                <Grid2 size={1}>
+                    <Info color="info" fontSize="large" />
+                </Grid2>
+                <Grid2 size={11}>
+                    <Typography>{activity.description}</Typography>
+                </Grid2>
+            </Grid2>
+            <Divider />
+            <Grid2 container alignItems="center" pl={2} py={1}>
+                <Grid2 size={1}>
+                    <CalendarToday color="info" fontSize="large" />
+                </Grid2>
+                <Grid2 size={11}>
+                    <Typography>{formatDate(activity.date)}</Typography>
+                </Grid2>
+            </Grid2>
+            <Divider />
+
+            <Grid2 container alignItems="center" pl={2} py={1}>
+                <Grid2 size={1}>
+                    <Place color="info" fontSize="large" />
+                </Grid2>
+                <Grid2 size={11}>
+                    <Typography>
+                        {activity.venue}, {activity.city}
+                    </Typography>
+                </Grid2>
+            </Grid2>
+        </Paper>
     )
 }
-
-export default observer(ActivityDetailInfo);
