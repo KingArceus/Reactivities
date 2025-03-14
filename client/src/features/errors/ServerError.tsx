@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useStore } from "../../app/stores/store";
+import { useStore } from "../../lib/stores/store";
 import { Container, Header, Segment } from "semantic-ui-react";
 
 function ServerError() {
