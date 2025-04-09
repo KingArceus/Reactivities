@@ -15,13 +15,14 @@ namespace Application.Activities.Commands
         {
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-                var activity = await context.Activities.FindAsync(request.Id, cancellationToken) 
-                    ?? throw new Exception("Activity not found");
+                var activity = await context.Activities.FindAsync(request.Id, cancellationToken);
+                
+                if (activity == null) return Result<Unit>.Failure("Activity not found", 404);
 
                 context.Activities.Remove(activity);
 
-                var result = await context.SaveChangesAsync() > 0;
-                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to delete activity");
+                var result = await context.SaveChangesAsync(cancellationToken) > 0;
+                return result ? Result<Unit>.Success(Unit.Value) : Result<Unit>.Failure("Failed to delete activity", 400);
             }
         }
     }

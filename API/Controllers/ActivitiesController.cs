@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Domain;
 using Application.Activities.Queries;
 using Application.Activities.Commands;
+using Application.Activities.DTOs;
 
 namespace API.Controllers
 {
@@ -24,18 +24,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateActivity(Activity activity)
+        public async Task<IActionResult> CreateActivity(CreateActivityDto activityDto)
         {
-            var result = await Mediator.Send(new CreateActivity.Command{Activity = activity});
+            var result = await Mediator.Send(new CreateActivity.Command{ActivityDto = activityDto});
 
             return HandleResult(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditActivity(string id, Activity activity) 
+        public async Task<IActionResult> EditActivity(string id, EditActivityDto activityDto) 
         {
-            activity.Id = id;
-            var result = await Mediator.Send(new EditActivity.Command{Activity = activity});
+            activityDto.Id = id;
+            var result = await Mediator.Send(new EditActivity.Command{ActivityDto = activityDto});
 
             return HandleResult(result);
         }

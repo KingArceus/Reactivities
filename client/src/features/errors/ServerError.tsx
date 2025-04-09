@@ -1,22 +1,26 @@
-import { observer } from "mobx-react-lite";
-import { useStore } from "../../lib/stores/store";
-import { Container, Header, Segment } from "semantic-ui-react";
+import { Divider, Paper, Typography } from "@mui/material";
+import { useLocation } from "react-router";
 
-function ServerError() {
-    const {commonStore} = useStore();
-
+export default function ServerError() {
+    const { state } = useLocation();
+    
     return (
-        <Container>
-            <Header as={'h1'} content='Server Error'></Header>
-            <Header sub as={'h5'} color='red' content={commonStore.error?.message}></Header>
-            {commonStore.error?.details && (
-                <Segment>
-                    <Header as={'h4'} content='Stack Trace' color="teal"></Header>
-                    <code style={{marginTop: '10px'}}>{commonStore.error.details}</code>
-                </Segment>
+        <Paper>
+            {state.error ? (
+                <>
+                    <Typography gutterBottom variant="h3" sx={{ px: 4, pt: 2 }}>
+                        {state.error?.message || "There was an error"}
+                    </Typography>
+                    <Divider />
+                    <Typography variant="body1" sx={{ p: 4 }}>
+                        {state.error?.details || "Internal server error"}
+                    </Typography>
+                </>
+            ) : (
+                <Typography variant="h5">
+                    Server Error
+                </Typography>
             )}
-        </Container>
+        </Paper>
     )
 }
-
-export default observer(ServerError);

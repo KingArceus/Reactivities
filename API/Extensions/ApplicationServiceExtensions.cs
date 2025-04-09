@@ -1,5 +1,6 @@
-using Application.Activities;
+using API.Middleware;
 using Application.Activities.Queries;
+using Application.Activities.Validators;
 using Application.Core;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -25,10 +26,14 @@ namespace API.Extensions
                 });
             });
 
-            services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>());
+            services.AddMediatR(config => {
+                config.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
+                config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            });
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             services.AddFluentValidationAutoValidation();
-            services.AddValidatorsFromAssemblyContaining<Create>();
+            services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
+            services.AddTransient<ExceptionMiddleware>();
 
             return services;
         }
